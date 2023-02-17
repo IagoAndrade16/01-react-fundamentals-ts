@@ -13,10 +13,15 @@ interface IAuthor {
   avatarUrl: string;
 }
 
-interface IPostProps {
+export interface IPost {
+  id: number;
   author: IAuthor;
   publishedAt: Date;
   content: IContent[];
+}
+
+interface IPostProps {
+  post: IPost;
 }
 
 interface IContent {
@@ -24,7 +29,7 @@ interface IContent {
   content: string;
 }
 
-export function Post({ author, content, publishedAt }: IPostProps) {
+export function Post({ post }: IPostProps) {
   const [comments, setComments] = useState(
     [
       'post muito bacana hein!'
@@ -33,11 +38,11 @@ export function Post({ author, content, publishedAt }: IPostProps) {
 
   const [newCommentText, setNewCommentText] = useState('');
 
-  const publishedDateFormated = format(publishedAt, "d 'de' LLLL 'ás' HH:mm'h'", {
+  const publishedDateFormated = format(post.publishedAt, "d 'de' LLLL 'ás' HH:mm'h'", {
     locale: ptBR
   })
 
-  const publishedDateRelativeNow = formatDistanceToNow(publishedAt, {
+  const publishedDateRelativeNow = formatDistanceToNow(post.publishedAt, {
     locale: ptBR,
     addSuffix: true
   })
@@ -72,22 +77,22 @@ export function Post({ author, content, publishedAt }: IPostProps) {
     <article className={styles.post}>
       <header>
         <div className={styles.author}>
-          <Avatar src={author.avatarUrl} />
+          <Avatar src={post.author.avatarUrl} />
           <div className={styles.authorInfo}>
             <strong>
-              {author.name}
+              {post.author.name}
             </strong>
-            <span>{author.role}</span>
+            <span>{post.author.role}</span>
           </div>
         </div>
 
-        <time title={publishedDateFormated} dateTime={publishedAt.toISOString()}>
+        <time title={publishedDateFormated} dateTime={post.publishedAt.toISOString()}>
           {publishedDateRelativeNow}
         </time>
       </header>
 
       <div className={styles.content}>
-        {content.map(paragraph => {
+        {post.content.map(paragraph => {
           if(paragraph.type === 'link') {
             return (
               <a href="#">
